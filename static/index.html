@@ -98,12 +98,18 @@ function showDetail(si) {
 	// s += i;
 	// s += ')\"> Show Document </button>  ' + br;
 
-	s += br + br + res.extracted_metadata.title + '[' +res.score + ']';
-	filename = res.extracted_metadata.filename.split('.pdf')[0] + '.pdf';
-	s += br + filename + br;
-	s += 'Author: ' + res.extracted_metadata.author;
-	s += '  Publication date: ' + res.extracted_metadata.publicationdate + br;
-  s += br + '<strong>Concepts</strong> [relevance]' +br;
+	s += br + br + '<strong>Tttle: </strong>';
+  s += res.extracted_metadata.title + ' [' +res.score + ']' +br;
+  s += '<strong>File name: </strong>';
+	//filename = res.extracted_metadata.filename.split('.pdf')[0] + '.pdf';
+  // s += br + filename + br;
+  filename = res.extracted_metadata.filename.split('.pdf')[0];
+  filename += '.pdf';
+  s += '<a href=\"/uploads/' + filename + '\" download>' + filename + '</a>' +br;
+
+	s += '<strong>Author: </strong>' + res.extracted_metadata.author +br;
+	s += '<strong>Publication date: </strong>' + res.extracted_metadata.publicationdate + br;
+  s += br + '<strong>Concepts [relevance]</strong>' +br;
   for (j = 0; j < res.enriched_text.concepts.length; j++) {
 			conc = res.enriched_text.concepts[j];
       s += conc.text + ' [' + conc.relevance +']' +br;
@@ -140,11 +146,11 @@ function showResults() {
 		s += ')\"> Detail </button>  ';
 		s += qr.results[i].extracted_metadata.title + '[' +
 				qr.results[i].score + "]<br />";
+
 		filename = qr.results[i].extracted_metadata.filename.split('.pdf')[0];
 		filename += '.pdf';
-		//filepath = 'public/' + filename;
-		//s += '<a href=\"file:///' + filepath + '\">' + filename + '</a>';
-		s += filename;
+		s += '<a href=\"/uploads/' + filename + '\" download>' + filename + '</a>';
+
 		x.innerHTML += br + br + s;
 	 }
 }

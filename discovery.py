@@ -19,6 +19,7 @@
 
 import os
 from flask import Flask, jsonify
+import flask
 #Use CORS to make API available to any client
 #https://pypi.python.org/pypi/Flask-Cors/3.0.3
 #from flask_cors import CORS, cross_origin
@@ -53,6 +54,11 @@ app = Flask(__name__)
 def Welcome():
     return app.send_static_file('index.html')
 
+
+@app.route('/uploads/<path:filename>')
+def download_file(filename):
+    return flask.send_from_directory('public',
+                               filename, as_attachment=True)
 
 #Works web servie starts here
 @app.route('/api/discovery/<search>', methods=['Get'])
