@@ -49,6 +49,13 @@ var x = document.getElementById("results");
 var qr ={};
 var br = "<br />";
 
+function strip(html)
+{
+   var tmp = document.createElement("DIV");
+   tmp.innerHTML = html;
+   return tmp.textContent || tmp.innerText || "";
+}
+
 // This function is called when the button is pressed and uses
 // It sets the glabl variable qr to the query return json structure
 function getResults() {
@@ -98,7 +105,21 @@ function showDetail(si) {
 
 	s += '<strong>Author: </strong>' + res.extracted_metadata.author +br;
 	s += '<strong>Publication date: </strong>' + res.extracted_metadata.publicationdate + br;
-  s += br + '<strong>Concepts [relevance]</strong>' +br;
+
+  s += br + '<strong>Key passages [score]</strong>' +br;
+  var found = false;
+  for (j = 0; j < qr.passages.length; j++) {
+    if (qr.passages[j].document_id == res.id) {
+      s += strip(qr.passages[j].passage_text);
+      s += ' [' + qr.passages[j].passage_score + ']' +br +br;
+      found = true;
+    }
+  }
+  if (!found) {
+    s += 'None found' +br +br;
+  }
+
+  s += '<strong>Concepts [relevance]</strong>' +br;
   for (j = 0; j < res.enriched_text.concepts.length; j++) {
 			conc = res.enriched_text.concepts[j];
       s += conc.text + ' [' + conc.relevance +']' +br;

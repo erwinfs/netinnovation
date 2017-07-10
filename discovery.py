@@ -69,13 +69,14 @@ def search(search):
 
     print('Searching for ' + searchStr + ', ' + filterStr )
 
-    qopts = {'query': searchStr, 'filter': filterStr}
+    qopts = {'natural_language_query': searchStr, 'filter': filterStr, 'passages': 'true'}
+
     qr = discovery.query(ENVIRONMENT_ID, COLLECTION_ID, qopts)
 
     #Convert Dictionary to json object. This could be done in return statement
     #This allows it to be printed to the console before it is returned
     retval = jsonify(qr)
-    print(retval)
+    #print(qr))
     return retval
 
 port = os.getenv('PORT', '5000')
