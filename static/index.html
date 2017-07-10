@@ -1,5 +1,5 @@
-<!-- Gets location using HTML, cals WS to find closest works location, -->
-<!-- displays info in text and on OSM map -->
+<!-- Watson Discovery service based search of LCNF, NIA and NIC docs -->
+<!-- Provides listing of top earch results and detail for each document -->
 <!-- It uses bootstrap framework for UI to scale it for multi device use-->
 
 <!DOCTYPE html>
@@ -47,19 +47,18 @@
 <script>
 var x = document.getElementById("results");
 var qr ={};
-br = "<br />";
+var br = "<br />";
 
 // This function is called when the button is pressed and uses
-// HTML feature to obtain position
-// Passes findPosition function as parameter to be called when position is found
+// It sets the glabl variable qr to the query return json structure
 function getResults() {
 	x.innerHTML = "Please wait ...";
 
   //Build url to invoke web service - relative path assumes they are running
   //from same server
 
-	searchStr = $("#searchStr").val();
-	filterStr = $("#filterStr").val();
+	var searchStr = $("#searchStr").val();
+	var filterStr = $("#filterStr").val();
   var discoveryUrl = "/api/discovery/" + searchStr + "," + filterStr;
 
   //Asynch web service calls showPosition when result is received
@@ -77,21 +76,11 @@ function getResults() {
   });
 }
 
-function showDoc(si) {
-	i = parseInt(si);
-	res = qr.results[i];
-
-	s = '<button type=\"button\" class=\"btn btn-default\" onclick=\"showDoc(';
-	s += i;
-	s += ')\"> Back </button>  ' + br;
-
-	s += res.html;
-}
-
+// Shows detail for a specific document
 function showDetail(si) {
-  // Display text with distance, descritption & location
-	i = parseInt(si);
-	res = qr.results[i];
+	var i = parseInt(si);
+	var res = qr.results[i];
+  var s = '';
 
 	s = '<button type=\"button\" class=\"btn btn-default\" onclick=\"showResults()\"> Back </button>  ';
 	// s = '<button type=\"button\" class=\"btn btn-default\" onclick=\"showDoc(';
@@ -134,7 +123,12 @@ function showDetail(si) {
 }
 
 // Called by jQuery when a response is received
+// Shows results of initial query (top 10 is default)
 function showResults() {
+  var i = 0;
+  var s = '';
+  var filename = '';
+
   // Display text with distance, descritption & location
 	x.innerHTML += 'thanks';
 	x.innerHTML = "Number of results found: "  + qr.matching_results;
@@ -145,7 +139,7 @@ function showResults() {
 		s = '<button type=\"button\" class=\"btn btn-xs\" onclick=\"showDetail(';
 		s += i;
 		s += ')\"> Detail </button>  ';
-		s += qr.results[i].extracted_metadata.title + '[' +
+		s += qr.results[i].extracted_metadata.title + ' [' +
 				qr.results[i].score + "]<br />";
 
 		filename = qr.results[i].extracted_metadata.filename.split('.pdf')[0];

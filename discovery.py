@@ -12,10 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#This is a simple web service that finds and returns the nearest street Works
-#that are contained in a '|' delimeted file works.txt
-#There is also a web service for downloading works.txt from an Object Store
-#/ape/download
+#Watson Discovery service based search of LCNF, NIA and NIC docs
+#Provides listing of top earch results and detail for each document
 
 import os
 from flask import Flask, jsonify
@@ -32,16 +30,17 @@ import sys
 import os
 from watson_developer_cloud import DiscoveryV1
 
-DISCOVERY_USERNAME="ddde726c-7f0c-488b-861c-dd845aa1c3f1"
-DISCOVERY_PASSWORD="16DtSO03WCoD"
+import credentials
 
-ENVIRONMENT_ID="7c98c384-8455-4aab-b54f-bb91065ca390"
-COLLECTION_ID="74f48674-41b2-47c3-b041-df802dd451dd"
+DISCOVERY_USERNAME = credentials.discovery['DISCOVERY_USERNAME']
+DISCOVERY_PASSWORD = credentials.discovery['DISCOVERY_PASSWORD']
+ENVIRONMENT_ID = credentials.discovery['ENVIRONMENT_ID']
+COLLECTION_ID = credentials.discovery['COLLECTION_ID']
 
 discovery = DiscoveryV1(
-  username=DISCOVERY_USERNAME,
-  password=DISCOVERY_PASSWORD,
-  version="2017-06-25"
+  username = DISCOVERY_USERNAME,
+  password = DISCOVERY_PASSWORD,
+  version = "2017-06-25"
 )
 
 app = Flask(__name__)
