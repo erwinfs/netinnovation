@@ -1,0 +1,7 @@
+discovery = dict(
+  DISCOVERY_USERNAME="",
+  DISCOVERY_PASSWORD="",
+
+  ENVIRONMENT_ID="",
+  COLLECTION_ID=""
+)
