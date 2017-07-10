@@ -3,7 +3,7 @@ applications:
   memory: 128M
   instances: 1
   domain: eu-gb.mybluemix.net
-  name: Network Innovation Discovery
-  host: Network-Innovation-Discovery
+  name: efs-discovery
+  host: efs-discovery
   disk_quota: 1024M
   buildpack: python_buildpack

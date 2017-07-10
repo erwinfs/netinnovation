@@ -1,24 +1,153 @@
+<!-- Gets location using HTML, cals WS to find closest works location, -->
+<!-- displays info in text and on OSM map -->
+<!-- It uses bootstrap framework for UI to scale it for multi device use-->
+
 <!DOCTYPE html>
 <html>
+<head>
+<title>Innovation Knowledge Base</title>
+<meta charset="utf-8">
 
-  <head>
-    <title>Python Flask Starter Application</title>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="static/stylesheets/style.css">
-  </head>
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
-  <body>
-    <table>
-      <tr>
-        <td style= "width:30%;">
-          <img class = "newappIcon" src="static/images/newapp-icon.png">
-        <td>
-            <h1>Hi there!</h1>
-          <p>Thanks for creating a
-            <span class = "blue">Python <a href = "http://flask.pocoo.org/">Flask</a> Starter Application</span>.
-    </table>
-  </body>
+ <!-- Latest compiled and minified CSS for bootstrap -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<!-- Latest compiled bootstrap JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+</style>
+</head>
+
+<body>
+<div class="container">
+  <div class="panel panel-default" panel-modest>
+    <div class="panel-heading"><h3>Network Innovation Knowledge Base</h3></div>
+      <div class="panel-body">
+				<form class="form-inline">
+			    <div class="form-group">
+			      <label for="searchStr">Search for</label>
+			      <input type="text" class="form-control" id="searchStr">
+			    </div>
+			    <div class="form-group">
+			      <label for="filterStr"> Filter</label>
+			      <input type="test" class="form-control" id="filterStr">
+			    </div>
+					<button type="button" class="btn btn-default" onclick="getResults()"> Search </button>
+			  </form>
+				<p><br /></p>
+        <p id="results"></p>
+    </div>
+  </div>
+</div>
+</body>
+
+<script>
+var x = document.getElementById("results");
+var qr ={};
+br = "<br />";
+
+// This function is called when the button is pressed and uses
+// HTML feature to obtain position
+// Passes findPosition function as parameter to be called when position is found
+function getResults() {
+	x.innerHTML = "Please wait ...";
+
+  //Build url to invoke web service - relative path assumes they are running
+  //from same server
+
+	searchStr = $("#searchStr").val();
+	filterStr = $("#filterStr").val();
+  var discoveryUrl = "/api/discovery/" + searchStr + "," + filterStr;
+
+  //Asynch web service calls showPosition when result is received
+  $.ajax({
+    xhrFields: {cors: false},
+    type: 'GET',
+    url: discoveryUrl,
+    success: function(data) {
+			qr = data;
+      showResults(data);
+    },
+    error: function(err) {
+      showResults(err);
+    }
+  });
+}
+
+function showDoc(si) {
+	i = parseInt(si);
+	res = qr.results[i];
+
+	s = '<button type=\"button\" class=\"btn btn-default\" onclick=\"showDoc(';
+	s += i;
+	s += ')\"> Back </button>  ' + br;
+
+	s += res.html;
+}
+
+function showDetail(si) {
+  // Display text with distance, descritption & location
+	i = parseInt(si);
+	res = qr.results[i];
+
+	s = '<button type=\"button\" class=\"btn btn-default\" onclick=\"showResults()\"> Back </button>  ';
+	// s = '<button type=\"button\" class=\"btn btn-default\" onclick=\"showDoc(';
+	// s += i;
+	// s += ')\"> Show Document </button>  ' + br;
+
+	s += br + br + res.extracted_metadata.title + '[' +res.score + ']';
+	filename = res.extracted_metadata.filename.split('.pdf')[0] + '.pdf';
+	s += br + filename + br;
+	s += 'Author: ' + res.extracted_metadata.author;
+	s += '  Publication date: ' + res.extracted_metadata.publicationdate + br;
+  s += br + '<strong>Concepts</strong> [relevance]' +br;
+  for (j = 0; j < res.enriched_text.concepts.length; j++) {
+			conc = res.enriched_text.concepts[j];
+      s += conc.text + ' [' + conc.relevance +']' +br;
+	}
+
+	s += br + '<strong>Entities [relevance]</strong>'  +br;
+	for (j = 0; j < res.enriched_text.entities.length; j++) {
+			ent = res.enriched_text.entities[j];
+      s += ent.text + ' [' + ent.relevance +']' +br;
+	}
+
+	s += br + '<strong>Taxonomies [score]</strong>' +br;
+	for (j = 0; j < res.enriched_text.taxonomy.length; j++) {
+			tax = res.enriched_text.taxonomy[j];
+      s += tax.label + ' [' + tax.score +']' + br;
+	}
+
+	s += br + '<strong>Document text</strong>' +br;
+	s += res.html;
+
+	x.innerHTML = s;
+}
+
+// Called by jQuery when a response is received
+function showResults() {
+  // Display text with distance, descritption & location
+	x.innerHTML += 'thanks';
+	x.innerHTML = "Number of results: "  + qr.matching_results;
+	//x.innerHTML += "<br />";
+	for (i=0; i < qr.results.length; i++) {
+
+		s = '<button type=\"button\" class=\"btn btn-xs\" onclick=\"showDetail(';
+		s += i;
+		s += ')\"> Detail </button>  ';
+		s += qr.results[i].extracted_metadata.title + '[' +
+				qr.results[i].score + "]<br />";
+		filename = qr.results[i].extracted_metadata.filename.split('.pdf')[0];
+		filename += '.pdf';
+		//filepath = 'public/' + filename;
+		//s += '<a href=\"file:///' + filepath + '\">' + filename + '</a>';
+		s += filename;
+		x.innerHTML += br + br + s;
+	 }
+}
+</script>
 
 </html>

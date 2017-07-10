@@ -1,1 +1,4 @@
 Flask==0.10.1
+python-swiftclient
+python-keystoneclient
+watson_developer_cloud
