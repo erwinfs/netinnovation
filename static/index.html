@@ -140,7 +140,7 @@ function showResults() {
 		s += i;
 		s += ')\"> Detail </button>  ';
 		s += qr.results[i].extracted_metadata.title + ' [' +
-				qr.results[i].score + "]<br />";
+				qr.results[i].score + ']' +br;
 
 		filename = qr.results[i].extracted_metadata.filename.split('.pdf')[0];
 		filename += '.pdf';
