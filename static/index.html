@@ -137,7 +137,8 @@ function showDetail(si) {
 function showResults() {
   // Display text with distance, descritption & location
 	x.innerHTML += 'thanks';
-	x.innerHTML = "Number of results: "  + qr.matching_results;
+	x.innerHTML = "Number of results found: "  + qr.matching_results;
+  x.innerHTML += ' showing top 10';
 	//x.innerHTML += "<br />";
 	for (i=0; i < qr.results.length; i++) {
 
